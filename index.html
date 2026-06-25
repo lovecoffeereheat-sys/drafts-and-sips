@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drafts & Sips — Reheated, Obviously</title>
+  <meta name="description" content="A weekly Substack check-in tool. Five minutes to figure out what you actually want to say this week — and whether you have the energy to say it." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23944e63'/><path d='M8 10h16M8 16h11M8 22h8' stroke='%23f6e6e3' stroke-width='2' stroke-linecap='round'/><circle cx='24' cy='22' r='4' fill='%23c4a45a' opacity='.9'/><path d='M24 19v3.5l2 1' stroke='%2316402d' stroke-width='1.2' stroke-linecap='round'/></svg>" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blush: #f6e6e3;
+      --rose: #944e63;
+      --rose-light: #944e6315;
+      --rose-border: #944e63;
+      --petal: #e8c9c2;
+      --cream: #fffaf9;
+      --gold: #c4a45a;
+      --forest: #16402d;
+      --ink: #1e2433;
+      --slate: #3d4a5c;
+      --muted: #b47b84;
+      --font: 'Georgia', serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; }
+    }
+
+    body {
+      background: var(--blush);
+      font-family: var(--font-sans);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 2rem 1rem 3rem;
+    }
+
+    .wrap {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* Hero */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .hero-name {
+      font-family: var(--font);
+      font-size: 22px;
+      font-weight: normal;
+      color: var(--forest);
+      letter-spacing: 0.01em;
+    }
+
+    .hero-sub {
+      font-size: 12px;
+      color: var(--rose);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* Animated illustration */
+    @keyframes steam1 { 0%,100%{transform:translateY(0);opacity:0.5} 50%{transform:translateY(-8px);opacity:0.08} }
+    @keyframes steam2 { 0%,100%{transform:translateY(0);opacity:0.35} 50%{transform:translateY(-10px);opacity:0.06} }
+    @keyframes stir   { 0%{transform:rotate(-20deg)} 50%{transform:rotate(20deg)} 100%{transform:rotate(-20deg)} }
+
+    .steam-a { animation: steam1 2.4s ease-in-out infinite; transform-origin: 33px 22px; }
+    .steam-b { animation: steam2 2.9s ease-in-out infinite 0.6s; transform-origin: 39px 22px; }
+    .pen-stir { animation: stir 1.8s ease-in-out infinite; transform-origin: 36px 44px; }
+
+    /* Cards */
+    .card {
+      background: var(--cream);
+      border: 0.5px solid var(--petal);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .intro-card {
+      background: var(--cream);
+      border: 0.5px solid var(--petal);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .intro-card p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--slate);
+      margin-bottom: 0.75rem;
+    }
+
+    .intro-card p:last-child { margin-bottom: 0; }
+
+    .intro-card em {
+      font-family: var(--font);
+      font-style: italic;
+      color: var(--ink);
+    }
+
+    .how-to {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 0.5px solid var(--petal);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .how-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--slate);
+      line-height: 1.55;
+    }
+
+    .how-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--rose-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--rose);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Step headers */
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--rose-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--rose);
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .step-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      display: block;
+      line-height: 1.5;
+    }
+
+    .step-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+      display: block;
+    }
+
+    .optional-tag {
+      display: inline-block;
+      font-size: 10px;
+      background: var(--blush);
+      color: var(--muted);
+      border: 0.5px solid var(--petal);
+      border-radius: 4px;
+      padding: 2px 7px;
+      margin-left: 8px;
+      vertical-align: middle;
+      font-weight: normal;
+    }
+
+    /* Energy / scope buttons */
+    .btn-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .btn-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
+    @media (max-width: 420px) {
+      .btn-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .choice-btn {
+      border: 0.5px solid var(--petal);
+      border-radius: 8px;
+      padding: 10px 6px;
+      text-align: center;
+      background: var(--cream);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .choice-btn:hover { background: var(--blush); }
+
+    .choice-btn.selected {
+      border-color: var(--rose);
+      background: var(--rose-light);
+    }
+
+    .choice-icon { font-size: 22px; display: block; margin-bottom: 5px; }
+
+    .choice-text {
+      font-size: 11px;
+      color: var(--slate);
+      line-height: 1.3;
+    }
+
+    .choice-btn.selected .choice-text { color: var(--rose); }
+
+    /* Textarea */
+    textarea {
+      width: 100%;
+      min-height: 84px;
+      border: 0.5px solid var(--petal);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: var(--font-sans);
+      color: var(--ink);
+      background: var(--blush);
+      resize: vertical;
+      line-height: 1.65;
+      transition: border-color 0.15s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--rose);
+    }
+
+    textarea::placeholder { color: var(--muted); }
+
+    /* Steep button */
+    .steep-btn {
+      width: 100%;
+      background: var(--rose);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+      margin-top: 0.5rem;
+      letter-spacing: 0.01em;
+    }
+
+    .steep-btn:hover { background: #7d3f53; }
+    .steep-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Divider */
+    hr {
+      border: none;
+      border-top: 0.5px solid var(--petal);
+      margin: 1.5rem 0;
+    }
+
+    /* Output */
+    .pour-tag {
+      display: inline-block;
+      font-size: 11px;
+      background: #16402d18;
+      color: var(--forest);
+      border-radius: 4px;
+      padding: 3px 10px;
+      margin-bottom: 12px;
+      letter-spacing: 0.03em;
+    }
+
+    .output-card {
+      background: var(--cream);
+      border: 0.5px solid var(--petal);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-top: 8px;
+    }
+
+    .output-card.accent {
+      border-left: 2px solid var(--rose);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .output-label {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .output-text {
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.7;
+    }
+
+    .one-sentence {
+      font-family: var(--font);
+      font-style: italic;
+      font-size: 15px;
+      color: var(--ink);
+      line-height: 1.65;
+    }
+
+    .picked-idea {
+      background: var(--blush);
+      border: 0.5px solid var(--petal);
+      border-left: 2px solid var(--rose);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.6;
+      margin-bottom: 4px;
+    }
+
+    .gentle-note {
+      font-size: 13px;
+      color: var(--slate);
+      line-height: 1.65;
+      margin-top: 8px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 0.5px solid var(--petal);
+      background: var(--cream);
+    }
+
+    .gentle-note strong { font-size: 12px; color: var(--muted); }
+
+    .loading-msg {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 14px;
+      color: var(--muted);
+      font-family: var(--font);
+      font-style: italic;
+    }
+
+    .error-msg {
+      font-size: 13px;
+      color: var(--rose);
+      padding: 12px 14px;
+      background: #944e630d;
+      border-radius: 8px;
+      line-height: 1.6;
+      margin-top: 8px;
+    }
+
+    .output-section { display: none; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 0.5px solid var(--petal);
+    }
+
+    .footer-name {
+      font-family: var(--font);
+      font-size: 14px;
+      color: var(--forest);
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+
+    .footer-email {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer-email a {
+      color: var(--rose);
+      text-decoration: none;
+    }
+
+    .footer-email a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Hero -->
+  <div class="hero">
+    <svg width="100" height="80" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g class="steam-a"><path d="M33 22 Q31 16 33 10 Q35 16 33 22" stroke="#b47b84" stroke-width="1.4" stroke-linecap="round" fill="none"/></g>
+      <g class="steam-b"><path d="M39 20 Q37 13 39 7 Q41 13 39 20" stroke="#b47b84" stroke-width="1.4" stroke-linecap="round" fill="none"/></g>
+      <rect x="14" y="26" width="44" height="30" rx="4" fill="#944e63" opacity="0.13"/>
+      <rect x="14" y="26" width="44" height="30" rx="4" stroke="#944e63" stroke-width="1" opacity="0.3" fill="none"/>
+      <ellipse cx="36" cy="26" rx="22" ry="4" fill="#944e63" opacity="0.18"/>
+      <ellipse cx="36" cy="26" rx="19" ry="3" fill="#7a3a2a" opacity="0.18"/>
+      <ellipse cx="36" cy="57" rx="26" ry="4" fill="#944e63" opacity="0.12"/>
+      <path d="M10 57 Q36 62 62 57" stroke="#944e63" stroke-width="0.8" fill="none" opacity="0.3"/>
+      <path d="M58 34 Q68 34 68 41 Q68 48 58 48" stroke="#944e63" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <g class="pen-stir">
+        <rect x="34" y="10" width="4" height="34" rx="2" fill="#c4a45a" opacity="0.85"/>
+        <rect x="34" y="10" width="4" height="7" rx="2" fill="#3d4a5c" opacity="0.6"/>
+        <polygon points="34,44 38,44 36,50" fill="#c4a45a" opacity="0.9"/>
+        <rect x="37" y="12" width="1.5" height="16" rx="0.75" fill="#3d4a5c" opacity="0.3"/>
+      </g>
+    </svg>
+    <h1 class="hero-name">Drafts &amp; Sips</h1>
+    <p class="hero-sub">Reheated, Obviously</p>
+  </div>
+
+  <!-- Intro -->
+  <div class="intro-card">
+    <p><em>Welcome to your weekly steep.</em></p>
+    <p>This isn't a content calendar. It's five minutes to figure out what you actually want to say this week — and whether you have the energy to say it. Answer honestly. Messy is fine.</p>
+    <p>Hit <strong>steep it</strong> when you're ready and we'll find the one thing worth writing this week.</p>
+    <div class="how-to">
+      <div class="how-item"><div class="how-num">1</div><span>Answer the questions honestly — fragments and half-thoughts are welcome</span></div>
+      <div class="how-item"><div class="how-num">2</div><span>Paste in a running idea list if you have one — we'll help you pick the right one for this week</span></div>
+      <div class="how-item"><div class="how-num">3</div><span>Get back a post idea, a realistic scope, and one sentence to start from — then take it to Substack and make it yours</span></div>
+    </div>
+  </div>
+
+  <!-- Step 1: Energy -->
+  <div class="card">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <span class="step-title">How are you coming into this week?</span>
+    </div>
+    <div class="btn-grid-4" id="energy-grid">
+      <button class="choice-btn" data-value="full pot" aria-label="Full pot — high energy">
+        <span class="choice-icon">☕</span>
+        <span class="choice-text">full pot</span>
+      </button>
+      <button class="choice-btn" data-value="half pot" aria-label="Half pot — moderate energy">
+        <span class="choice-icon">🫖</span>
+        <span class="choice-text">half pot</span>
+      </button>
+      <button class="choice-btn" data-value="scraping the bottom" aria-label="Scraping the bottom — low energy">
+        <span class="choice-icon">🥄</span>
+        <span class="choice-text">scraping the bottom</span>
+      </button>
+      <button class="choice-btn" data-value="reheating what's left" aria-label="Reheating what's left — very low energy">
+        <span class="choice-icon">♨️</span>
+        <span class="choice-text">reheating what's left</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 2: Circling -->
+  <div class="card">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <span class="step-title">What's been circling?</span>
+    </div>
+    <span class="step-label">What keeps coming back — not a task list, just what won't leave you alone.</span>
+    <textarea id="circling" placeholder="a half-thought, something you keep almost writing, something you overheard that stuck..." aria-label="What's been circling"></textarea>
+  </div>
+
+  <!-- Step 3: Want to say -->
+  <div class="card">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <span class="step-title">What do you want to say this week?</span>
+    </div>
+    <span class="step-label">Not what you should say. What's alive for you right now.</span>
+    <textarea id="want-to-say" placeholder="what have you been thinking about that you haven't said out loud yet?" aria-label="What you want to say"></textarea>
+    <span class="step-hint">fragments are fine. no wrong answers.</span>
+  </div>
+
+  <!-- Step 4: Idea list (optional) -->
+  <div class="card">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <span class="step-title">Got a running list? <span class="optional-tag">optional</span></span>
+    </div>
+    <span class="step-label">Paste your ideas below — messy is fine. We'll help you find the right one for this week.</span>
+    <textarea id="idea-list" placeholder="— empty nest post&#10;— something about getting dressed again&#10;— why midlife feels like starting over" aria-label="Your idea list"></textarea>
+  </div>
+
+  <!-- Step 5: Scope -->
+  <div class="card">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <span class="step-title">What would good enough look like this week?</span>
+    </div>
+    <div class="btn-grid-3" id="scope-grid">
+      <button class="choice-btn" data-value="full post" aria-label="Full post">
+        <span class="choice-icon">📝</span>
+        <span class="choice-text">full post</span>
+      </button>
+      <button class="choice-btn" data-value="short note" aria-label="Short note">
+        <span class="choice-icon">🗒️</span>
+        <span class="choice-text">short note</span>
+      </button>
+      <button class="choice-btn" data-value="save it, not this week" aria-label="Save it, not this week">
+        <span class="choice-icon">🌱</span>
+        <span class="choice-text">save it, not this week</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Steep button -->
+  <button class="steep-btn" id="steep-btn" onclick="steepIt()">steep it ↗</button>
+
+  <!-- Output -->
+  <div class="output-section" id="output-section">
+    <hr />
+    <span class="pour-tag">your pour this week</span>
+    <div id="output-inner"></div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p class="footer-name">Reheated, Obviously</p>
+    <p class="footer-email">questions? <a href="mailto:hey@gracesarah.ca">hey@gracesarah.ca</a></p>
+  </div>
+
+</div>
+
+<script>
+  // Choice buttons
+  document.querySelectorAll('#energy-grid .choice-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#energy-grid .choice-btn').forEach(b => {
+        b.classList.remove('selected');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('selected');
+      btn.setAttribute('aria-pressed', 'true');
+    });
+  });
+
+  document.querySelectorAll('#scope-grid .choice-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#scope-grid .choice-btn').forEach(b => {
+        b.classList.remove('selected');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('selected');
+      btn.setAttribute('aria-pressed', 'true');
+    });
+  });
+
+  async function steepIt() {
+    const energy = document.querySelector('#energy-grid .selected')?.dataset.value || '';
+    const circling = document.getElementById('circling').value.trim();
+    const wantToSay = document.getElementById('want-to-say').value.trim();
+    const ideaList = document.getElementById('idea-list').value.trim();
+    const scope = document.querySelector('#scope-grid .selected')?.dataset.value || 'short note';
+
+    const outputSection = document.getElementById('output-section');
+    const outputInner = document.getElementById('output-inner');
+    const btn = document.getElementById('steep-btn');
+
+    if (!circling && !wantToSay) {
+      outputSection.style.display = 'block';
+      outputInner.innerHTML = '<div class="error-msg">Fill in at least what\'s been circling or what you want to say — even a sentence is enough.</div>';
+      outputSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'steeping...';
+    outputSection.style.display = 'block';
+    outputInner.innerHTML = '<div class="loading-msg">finding your pour this week...</div>';
+    outputSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    try {
+      const response = await fetch('/.netlify/functions/steep', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ energy, circling, wantToSay, ideaList, scope })
+      });
+
+      const result = await response.json();
+      let html = '';
+
+      if (result.picked_idea) {
+        html += `<div style="margin-bottom:0.75rem">
+          <p style="font-size:11px;color:#944e63;margin-bottom:8px;letter-spacing:0.03em;text-transform:uppercase">from your list, this one is for this week</p>
+          <div class="picked-idea">${result.picked_idea}</div>
+        </div>`;
+      }
+
+      html += `<div class="output-card accent">
+        <span class="output-label">ready to post</span>
+        <p class="output-text">${result.ready_to_post}</p>
+      </div>`;
+
+      html += `<div class="output-card" style="margin-top:8px">
+        <span class="output-label">why this one, not the others</span>
+        <p class="output-text">${result.why_this_one}</p>
+      </div>`;
+
+      html += `<div class="output-card" style="margin-top:8px">
+        <span class="output-label">the one sentence</span>
+        <p class="one-sentence">${result.one_sentence}</p>
+      </div>`;
+
+      if (result.gentle_note) {
+        html += `<div class="gentle-note" style="margin-top:8px"><strong>a gentle note —</strong> ${result.gentle_note}</div>`;
+      }
+
+      outputInner.innerHTML = html;
+
+    } catch (err) {
+      outputInner.innerHTML = '<div class="error-msg">Something went sideways. Check your inputs and try again — or email <a href="mailto:hey@gracesarah.ca" style="color:#944e63">hey@gracesarah.ca</a> if it keeps happening.</div>';
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'steep it ↗';
+  }
+</script>
+</body>
+</html>
